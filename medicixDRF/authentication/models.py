@@ -3,12 +3,27 @@ from django.contrib.auth.models import AbstractBaseUser
 
 from .managers import MyUserManager
 
-class MyUser(AbstractBaseUser):
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class MyUser(BaseModel, AbstractBaseUser):
     username = models.CharField(max_length=150)
-    email = models.EmailField(max_length=200)
+    email = models.EmailField(
+        max_length=200,
+        unique=True,
+        blank=False,
+        null=False
+        )
     phone = models.CharField(max_length=50)
     address = models.CharField(max_length=255)
-    dob = models.DateField(blank=False)
+    dob = models.DateField(null=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
 
     GENDER_OPTIONS = [
         ("M", "Male"),
@@ -18,7 +33,6 @@ class MyUser(AbstractBaseUser):
 
     gender = models.CharField(max_length=50, choices=GENDER_OPTIONS)
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
 
     objects = MyUserManager()
 
@@ -26,10 +40,11 @@ class MyUser(AbstractBaseUser):
         return self.username
 
     def has_perm(self, perm, obj=None):
-        return self.is_superuser
+        return self.is_admin
 
     def has_module_perms(self, app_label):
         return True
 
-class MedicineProblem(models.Model):
+class MedicineProblem(BaseModel):
     user = models.ManyToManyField(MyUser, verbose_name="allergic_customers")
+    medicine = models.ForeignKey("medicine.Medicine", verbose_name="name_of_medicine", on_delete=models.CASCADE)

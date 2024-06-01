@@ -21,6 +21,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    # newly installed application
     "authentication",
     "medicine"
 ]
@@ -55,8 +57,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "medicixDRF.wsgi.application"
 
-
-
+AUTH_USER_MODEL = "authentication.MyUser"
 
 DATABASES = {
     "default": {
