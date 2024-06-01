@@ -6,3 +6,8 @@ from . import models
 @admin.register(models.MyUser)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'email')
+
+
+@admin.register(models.MedicineProblem)
+class MedicineProblemAdmin(admin.ModelAdmin):
+    pass

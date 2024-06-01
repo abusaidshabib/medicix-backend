@@ -46,5 +46,5 @@ class MyUser(BaseModel, AbstractBaseUser):
         return True
 
 class MedicineProblem(BaseModel):
-    user = models.ManyToManyField(MyUser, verbose_name="allergic_customers")
+    user = models.ForeignKey(MyUser, verbose_name="allergic_customers", on_delete=models.CASCADE)
     medicine = models.ForeignKey("medicine.Medicine", verbose_name="name_of_medicine", on_delete=models.CASCADE)
