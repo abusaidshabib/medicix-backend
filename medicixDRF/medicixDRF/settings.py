@@ -25,7 +25,8 @@ INSTALLED_APPS = [
 
     # newly installed application
     "authentication",
-    "medicine"
+    "medicine",
+    "branch"
 ]
 
 MIDDLEWARE = [

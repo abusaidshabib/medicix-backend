@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
+from django.utils.translation import gettext as _
 
 from .managers import MyUserManager
+from branch.models import Branch
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -11,6 +13,7 @@ class BaseModel(models.Model):
         abstract = True
 
 class MyUser(BaseModel, AbstractBaseUser):
+    branch = models.ForeignKey("branch.Branch", verbose_name=_("user branch"), on_delete=models.CASCADE, blank=True, null=True)
     username = models.CharField(max_length=150)
     email = models.EmailField(
         max_length=200,
