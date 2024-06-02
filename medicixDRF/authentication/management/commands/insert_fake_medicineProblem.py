@@ -35,3 +35,4 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(f'Successfully inserted {number_of_records} fake records into the medicine_problem model'))
 
+# python manage.py insert_fake_medicineProblem 20

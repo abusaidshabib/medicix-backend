@@ -35,6 +35,9 @@ class Command(BaseCommand):
                 is_admin=fake.boolean(chance_of_getting_true=10),
                 gender=random.choice(["M", "F", "T"])
             )
+            user.set_password('password123')
             user.save()
 
         self.stdout.write(self.style.SUCCESS(f'Successfully inserted {number_of_records} fake records into the MyUser model'))
+
+    # python manage.py insert_fake_user_data 20

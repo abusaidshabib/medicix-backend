@@ -13,7 +13,7 @@ class BaseModel(models.Model):
         abstract = True
 
 class MyUser(BaseModel, AbstractBaseUser):
-    branch = models.ForeignKey("branch.Branch", verbose_name=_("user branch"), on_delete=models.CASCADE, blank=True, null=True)
+    branch = models.ForeignKey("branch.Branch", verbose_name=_("user branch"), on_delete=models.CASCADE, null=True)
     username = models.CharField(max_length=150)
     email = models.EmailField(
         max_length=200,
