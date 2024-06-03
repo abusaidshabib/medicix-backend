@@ -1,6 +1,7 @@
 from pathlib import Path
 from datetime import timedelta
 from django.conf import settings
+import os
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -93,6 +94,14 @@ WSGI_APPLICATION = "medicixDRF.wsgi.application"
 
 AUTH_USER_MODEL = "authentication.User"
 
+# Email Configuration
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+EMAIL_USE_TLS = True
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -132,6 +141,8 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
+
+PASSWORD_RESET_TIMEOUT=120 # 120 Sec = 2 min er moddhe password reset korte hobe email theke
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
