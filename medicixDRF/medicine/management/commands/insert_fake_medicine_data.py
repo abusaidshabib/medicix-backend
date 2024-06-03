@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from medicine.models import Medicine
+from branch.models import Branch
 from faker import Faker
 import random
 from django.utils import timezone
@@ -17,8 +18,14 @@ class Command(BaseCommand):
         categories = ["T","SY","SU","IN","TO","D","IN","L"]
         uses_for = ["H","A"]
 
+        branches = Branch.objects.all()
+        if not branches.exists():
+            self.stdout.write(self.style.ERROR('No branches found. Please insert branches first.'))
+            return
+
         for _ in range(total_medicines):
             medicine = Medicine(
+                branch=random.choice(branches),
                 brand = fake.company(),
                 manufacturer = fake.company(),
                 generic = fake.word(),
@@ -34,4 +41,4 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(f'Successfully created {total_medicines} medicines'))
 
-    # python manage.py insert_fake_medicine_data 20
+    # python manage.py insert_fake_medicine_data 100

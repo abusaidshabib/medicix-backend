@@ -1,4 +1,6 @@
 from pathlib import Path
+from datetime import timedelta
+from django.conf import settings
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,8 +11,20 @@ SECRET_KEY = "django-insecure--50_zx&(f#1k@in2%49cxs#zp%@bo347)=n5ab!p=0$n+#ctj4
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": settings.SECRET_KEY,
+}
 
 
 
@@ -21,7 +35,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     "rest_framework",
+    'rest_framework_simplejwt',
+    "corsheaders",
 
     # newly installed application
     "authentication",
@@ -29,15 +46,30 @@ INSTALLED_APPS = [
     "branch"
 ]
 
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
+]
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
 ROOT_URLCONF = "medicixDRF.urls"
 
@@ -59,7 +91,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "medicixDRF.wsgi.application"
 
-AUTH_USER_MODEL = "authentication.MyUser"
+AUTH_USER_MODEL = "authentication.User"
 
 DATABASES = {
     "default": {

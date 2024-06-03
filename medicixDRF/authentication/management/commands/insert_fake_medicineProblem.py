@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from authentication.models import MedicineProblem
 from faker import Faker
 import random
-from authentication.models import MyUser
+from authentication.models import User
 from medicine.models import Medicine
 
 class Command(BaseCommand):
@@ -15,7 +15,7 @@ class Command(BaseCommand):
         fake = Faker()
         number_of_records = kwargs['number_of_records']
 
-        users = MyUser.objects.all()
+        users = User.objects.all()
         if not users.exists():
             self.stdout.write(self.style.ERROR('no users found. please insert users first.'))
             return
@@ -35,4 +35,4 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(f'Successfully inserted {number_of_records} fake records into the medicine_problem model'))
 
-# python manage.py insert_fake_medicineProblem 20
+# python manage.py insert_fake_medicineProblem 100

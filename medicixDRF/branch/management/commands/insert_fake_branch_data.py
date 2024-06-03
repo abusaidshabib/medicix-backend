@@ -23,4 +23,4 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(f'Successfully inserted {number_of_records} fake records into the Branch model'))
 
-        # python manage.py insert_fake_branch_data 100000000
+        # python manage.py insert_fake_branch_data 100
