@@ -4,24 +4,6 @@ from .models import User, MedicineProblem
 from branch.models import Branch
 from medicine.models import Medicine
 
-class MedicineSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Medicine
-        fields = ['generic']
-
-class MedicineProblemSerializer(serializers.ModelSerializer):
-    medicine = MedicineSerializer(read_only=True)
-
-    class Meta:
-        model = MedicineProblem
-        fields = ['medicine']
-
-class UserSerializer(serializers.ModelSerializer):
-    allergy = MedicineProblemSerializer(source='medicineproblem_set', many=True, read_only=True)
-    class Meta:
-        model = User
-        fields = ['username','email','phone','address','gender','is_active','is_staff','is_admin','allergy']
-
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={"input_type":"password"}, write_only=True)
@@ -53,3 +35,30 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validate_data):
         validate_data.pop('password2')
         return User.objects.create_user(**validate_data)
+
+class UserLoginSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(max_length=255)
+    class Meta:
+        model = User
+        fields = ['email', 'password']
+
+
+class MedicineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medicine
+        fields = ['generic']
+
+class MedicineProblemSerializer(serializers.ModelSerializer):
+    medicine = MedicineSerializer(read_only=True)
+
+    class Meta:
+        model = MedicineProblem
+        fields = ['medicine']
+
+class UserSerializer(serializers.ModelSerializer):
+    allergy = MedicineProblemSerializer(source='medicineproblem_set', many=True, read_only=True)
+    class Meta:
+        model = User
+        fields = ['username','email','phone','address','gender','is_active','is_staff','is_admin','allergy']
+
+

@@ -1,0 +1,1 @@
+# helps to generate custom errors

@@ -35,9 +35,8 @@ class Command(BaseCommand):
                 gender=random.choice(["M", "F", "T"])
             )
 
-
-            # user.set_password('password123')
-            # user.save()
+            user.set_password('1234')
+            user.save()
 
         self.stdout.write(self.style.SUCCESS(f'Successfully inserted {number_of_records} fake records into the MyUser model'))
 
