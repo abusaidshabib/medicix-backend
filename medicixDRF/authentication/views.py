@@ -7,7 +7,7 @@ from rest_framework import status
 from .models import MyUser
 from .serializers import MyUserSerializer
 
-# Create your views here.
+
 class UsersView(APIView):
     """
     API endpoint that allows users to be viewed or edited.

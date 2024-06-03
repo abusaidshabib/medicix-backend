@@ -1,7 +1,9 @@
 from django.db import models
 from authentication.models import BaseModel
+from django.utils.translation import gettext as _
 
 class Medicine(BaseModel):
+    branch = models.ForeignKey("branch.Branch", verbose_name=_("user branch"), on_delete=models.CASCADE, null=True)
     brand = models.CharField(max_length=200)
     manufacturer = models.CharField(max_length=255)
     generic = models.CharField(max_length=150)

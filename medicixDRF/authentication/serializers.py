@@ -2,7 +2,12 @@ from rest_framework import serializers
 
 from .models import MyUser, MedicineProblem
 from branch.models import Branch
-from medicine.serializers import MedicineSerializer
+from medicine.models import Medicine
+
+class MedicineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medicine
+        fields = ['generic']
 
 class MedicineProblemSerializer(serializers.ModelSerializer):
     medicine = MedicineSerializer(read_only=True)
