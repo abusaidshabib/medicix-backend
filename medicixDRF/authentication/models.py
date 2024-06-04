@@ -27,6 +27,7 @@ class User(BaseModel, AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    created_by = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
     GENDER_OPTIONS = [
         ("M", "Male"),

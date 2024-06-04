@@ -24,16 +24,18 @@ class MedicineProblemSerializer(serializers.ModelSerializer):
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={"input_type":"password"}, write_only=True)
     branch = serializers.CharField(required=True)
+    created_by = serializers.EmailField(write_only=True)
 
     class Meta:
         model = User
-        fields = ['username','email','phone','address','gender','is_active','is_staff','is_admin','branch', 'password', 'password2']
+        fields = ['username','email','phone','address','gender','is_active','is_staff','is_admin','branch', 'password', 'password2','created_by']
         extra_kwargs = {"password":{"write_only":True}}
 
     def validate(self, attrs):
         branch_name = attrs.get('branch')
         password = attrs.get('password')
         password2 = attrs.get('password2')
+        created_by = attrs.get('created_by')
 
         if password != password2:
             raise serializers.ValidationError("Password and confirm password doesn't match")
@@ -43,7 +45,16 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         except Branch.DoesNotExist:
             raise serializers.ValidationError("This is not a valid branch")
 
+        try:
+            created_by = User.objects.get(email=created_by)
+            print(created_by)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("This is not a valid user")
+
         attrs['branch'] = branch
+        attrs['created_by'] = created_by
+
+        print(attrs)
 
         return attrs
 
@@ -58,11 +69,17 @@ class UserLoginSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email', 'password']
 
-class UserSerializer(serializers.ModelSerializer):
-    allergy = MedicineProblemSerializer(source='medicineproblem_set', many=True, read_only=True)
+class CreatedBySerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username','email','phone','address','gender','is_active','is_staff','is_admin','allergy']
+        fields = ['email']
+
+class UserSerializer(serializers.ModelSerializer):
+    allergy = MedicineProblemSerializer(source='medicineproblem_set', many=True, read_only=True)
+    created_by = serializers.EmailField(source='created_by.email', read_only=True)
+    class Meta:
+        model = User
+        fields = ['username','email','phone','address','gender','is_active','is_staff','is_admin','allergy','created_by']
 
 
 class UserChangePasswordSerializer(serializers.ModelSerializer):
