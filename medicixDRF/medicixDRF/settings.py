@@ -95,7 +95,7 @@ WSGI_APPLICATION = "medicixDRF.wsgi.application"
 AUTH_USER_MODEL = "authentication.User"
 
 # Email Configuration
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
@@ -146,3 +146,4 @@ PASSWORD_RESET_TIMEOUT=120 # 120 Sec = 2 min er moddhe password reset korte hobe
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+SESSION_COOKIE_AGE = 1800 #30 min by default it's work for 14 days

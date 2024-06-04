@@ -81,6 +81,18 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username','email','phone','address','gender','is_active','is_staff','is_admin','allergy','created_by']
 
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.address = validated_data.get('address', instance.address)
+        instance.gender = validated_data.get('gender', instance.gender)
+        instance.allergy = validated_data.get('allergy', instance.allergy)
+        instance.is_active = validated_data.get('is_active', instance.is_active)
+        instance.is_staff = validated_data.get('is_staff', instance.is_staff)
+        instance.is_admin = validated_data.get('is_admin', instance.is_admin)
+        instance.save()
+        return instance
+
 
 class UserChangePasswordSerializer(serializers.ModelSerializer):
     password = serializers.CharField(style={"input_type":"password"}, write_only=True)
