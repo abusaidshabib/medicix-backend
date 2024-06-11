@@ -17,10 +17,6 @@ class Order(BaseModel):
     price = models.FloatField()
     order_type = models.CharField(max_length=50,  choices=ORDER_TYPE)
 
-    class Meta:
-        verbose_name = _("")
-        verbose_name_plural = _("s")
-
     def __str__(self):
         return self.name
 
