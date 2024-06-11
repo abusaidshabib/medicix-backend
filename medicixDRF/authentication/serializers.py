@@ -7,6 +7,7 @@ from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeErr
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from .utils import Util
+from drf_extra_fields.fields import Base64ImageField
 
 
 class MedicineSerializer(serializers.ModelSerializer):

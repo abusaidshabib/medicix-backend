@@ -23,6 +23,7 @@ class GetCSRFToken(APIView):
     def get(self, request):
         return Response({'success':'request is okay'})
 
+
 @method_decorator(csrf_protect, name='dispatch')
 class UserRegistrationView(APIView):
     def post(self, request, format=None):

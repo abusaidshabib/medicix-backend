@@ -8,7 +8,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = "django-insecure--50_zx&(f#1k@in2%49cxs#zp%@bo347)=n5ab!p=0$n+#ctj4"
-
+STATIC_DIR = BASE_DIR / 'static'
+MEDIA_DIR = BASE_DIR / "media"
 
 DEBUG = True
 
@@ -44,7 +45,8 @@ INSTALLED_APPS = [
     # newly installed application
     "authentication",
     "medicine",
-    "branch"
+    "branch",
+    "payorder"
 ]
 
 PASSWORD_HASHERS = [
@@ -141,6 +143,11 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
+STATICFILES_DIR = [STATIC_DIR]
+
+MEDIA_URL = "/media/"
+STATIC_ROOT = [STATIC_DIR]
+MEDIA_ROOT = [MEDIA_DIR]
 
 PASSWORD_RESET_TIMEOUT=120 # 120 Sec = 2 min er moddhe password reset korte hobe email theke
 

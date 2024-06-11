@@ -3,14 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.utils.translation import gettext as _
 
 from .managers import UserManager
-from branch.models import Branch
+from branch.models import Branch, AddressModel, BaseModel
 
-class BaseModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
 
 class User(BaseModel, AbstractBaseUser):
     branch = models.ForeignKey("branch.Branch", verbose_name=_("user branch"), on_delete=models.CASCADE, null=True, blank=True)
@@ -48,6 +42,11 @@ class User(BaseModel, AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
+class UserDetails(AddressModel):
+    user = models.ForeignKey(User, verbose_name=_("user_details"), on_delete=models.CASCADE)
+
+
 
 class MedicineProblem(BaseModel):
     user = models.ForeignKey(User, verbose_name="allergic_customers", on_delete=models.CASCADE)
