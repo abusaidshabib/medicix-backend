@@ -26,7 +26,7 @@ PAYMENT_METHODS = [
     ("nagad","Nagad")
 ]
 
-class Payments(BaseModel):
+class Payment(BaseModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     total_amount = models.FloatField()
     payment_method = models.CharField(max_length=50, choices=PAYMENT_METHODS)

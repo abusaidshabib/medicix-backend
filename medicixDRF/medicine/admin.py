@@ -6,3 +6,7 @@ from . import models
 
 class MedicineAdmin(admin.ModelAdmin):
     list_display=("id", "generic")
+
+@admin.register(models.Inventory)
+class InventoryAdmin(admin.ModelAdmin):
+    list_display = ("medicine","branch")
