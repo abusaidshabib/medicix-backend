@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     "medicine",
     "branch",
     "payorder",
-    "prescription"
+    "prescription",
+    "content"
 ]
 
 PASSWORD_HASHERS = [
