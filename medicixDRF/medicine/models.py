@@ -10,6 +10,8 @@ class Medicine(BaseModel):
     manufacturer = models.CharField(max_length=255)
     generic = models.CharField(max_length=150)
     strength = models.CharField(max_length=150)
+    subcategory = models.ForeignKey("content.Subcategory", on_delete=models.CASCADE)
+    price = models.FloatField()
 
     TABLETS_CATEGORY = [
         ("T","Table"),
@@ -21,9 +23,6 @@ class Medicine(BaseModel):
         ("IN", "Inhalers"),
         ("L","Lozenges")
     ]
-
-    category = models.CharField(max_length=200, choices=TABLETS_CATEGORY)
-    price = models.FloatField()
 
     MEDICINE_FOR = [
         ("H","Human"),

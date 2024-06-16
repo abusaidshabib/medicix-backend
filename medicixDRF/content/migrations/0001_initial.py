@@ -7,14 +7,11 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     initial = True
 
-    dependencies = [
-        ("branch", "0001_initial"),
-        ("medicine", "0001_initial"),
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name="Prescription",
+            name="Category",
             fields=[
                 (
                     "id",
@@ -27,25 +24,14 @@ class Migration(migrations.Migration):
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
-                (
-                    "prescription_img",
-                    models.ImageField(upload_to="uploads/prescription/"),
-                ),
-                ("doctor", models.CharField(max_length=250)),
-                ("date", models.DateField()),
-                (
-                    "user",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="branch.branch"
-                    ),
-                ),
+                ("name", models.CharField(max_length=255)),
             ],
             options={
                 "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name="PrescriptionDetails",
+            name="Subcategory",
             fields=[
                 (
                     "id",
@@ -58,22 +44,14 @@ class Migration(migrations.Migration):
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
-                ("start_date", models.DateField()),
-                ("end_date", models.DateField()),
-                ("dosage", models.CharField(max_length=250)),
-                ("times", models.IntegerField()),
+                ("name", models.CharField(max_length=255)),
                 (
-                    "medicine",
+                    "category",
                     models.ForeignKey(
+                        blank=True,
+                        null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="medicine.medicine",
-                    ),
-                ),
-                (
-                    "prescription",
-                    models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="prescription.prescription",
+                        to="content.category",
                     ),
                 ),
             ],

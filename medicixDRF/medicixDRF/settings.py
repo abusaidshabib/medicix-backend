@@ -2,12 +2,12 @@ from pathlib import Path
 from datetime import timedelta
 from django.conf import settings
 import os
+from decouple import config
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-SECRET_KEY = "django-insecure--50_zx&(f#1k@in2%49cxs#zp%@bo347)=n5ab!p=0$n+#ctj4"
+SECRET_KEY = config("SECRET_KEY")
 STATIC_DIR = BASE_DIR / 'static'
 MEDIA_DIR = BASE_DIR / "media"
 
