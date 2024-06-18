@@ -19,7 +19,6 @@ class AddressModel(BaseModel):
     city = models.CharField(max_length=150, blank=True, null=True)
     state = models.CharField(max_length=150, blank=True, null=True)
     post_code = models.IntegerField(blank=True, null=True)
-    district = models.CharField(max_length=150, blank=True, null=True)
     country = models.CharField(max_length=150, blank=True, null=True)
 
     class Meta:
@@ -30,3 +29,6 @@ class Branch(AddressModel):
 
     def __str__(self):
         return self.name
+
+class BranchAddress(AddressModel):
+    branch = models.OneToOneField(Branch, on_delete=models.CASCADE, blank=True, null=True)
