@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from django.shortcuts import render
-from rest_framework import permissions, viewsets
+from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate, login, logout
@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from .models import User
 from .serializers import UserSerializer, UserRegistrationSerializer, UserLoginSerializer, UserChangePasswordSerializer, SendPasswordResetEmailSerializer, UserPasswordResetSerializer
 from .utils import get_tokens_for_user
+from .permissions import IsAdmin, IsSuperUser, ReadOnly
 
 """
 this will return a csrf token on header and it will must be send with every protected url
@@ -65,6 +66,7 @@ class UserProfileView(APIView):
 
 @method_decorator(csrf_protect, name='dispatch')
 class UsersView(APIView):
+    permission_classes = [IsAdmin | IsSuperUser]
     """
     API endpoint that allows users to be viewed or edited.
     """

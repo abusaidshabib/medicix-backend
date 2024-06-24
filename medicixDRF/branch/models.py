@@ -24,11 +24,13 @@ class AddressModel(BaseModel):
     class Meta:
         abstract = True
 
-class Branch(AddressModel):
+class Branch(models.Model):
     name = models.CharField(_("Branch Name"), max_length=250, blank=False, null=False, unique=True)
+    branch_code = models.CharField(max_length=150, unique=True, blank=False)
+    created_by = models.ForeignKey("authentication.User", related_name='created_branches', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
 class BranchAddress(AddressModel):
-    branch = models.OneToOneField(Branch, on_delete=models.CASCADE, blank=True, null=True)
+    branch = models.OneToOneField(Branch, on_delete=models.CASCADE)

@@ -1,13 +1,14 @@
 from rest_framework import serializers
 
-from .models import User, MedicineProblem
-from branch.models import Branch
-from medicine.models import Medicine
 from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from .utils import Util
 from drf_extra_fields.fields import Base64ImageField
+
+from .models import User, MedicineProblem, UserDetails
+from branch.models import Branch
+from medicine.models import Medicine
 
 
 class MedicineSerializer(serializers.ModelSerializer):
@@ -22,14 +23,20 @@ class MedicineProblemSerializer(serializers.ModelSerializer):
         model = MedicineProblem
         fields = ['medicine']
 
+class UserDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserDetails
+        fields = ["house_number", "holding_number", "street_name", "village", "post_office", "district", "city", "state", "post_code", "country"]
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={"input_type":"password"}, write_only=True)
     branch = serializers.CharField(required=True)
     created_by = serializers.EmailField(write_only=True)
+    userdetails = UserDetailsSerializer(required=True)
 
     class Meta:
         model = User
-        fields = ['username','email','phone','address','gender','is_active','is_staff','is_admin','branch', 'password', 'password2','created_by']
+        fields = ['username','email','phone','address','gender','is_active','is_staff','is_admin','branch', 'password', 'password2','created_by','userdetails']
         extra_kwargs = {"password":{"write_only":True}}
 
     def validate(self, attrs):
@@ -48,32 +55,30 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
         try:
             created_by = User.objects.get(email=created_by)
-            print(created_by)
         except User.DoesNotExist:
             raise serializers.ValidationError("This is not a valid user")
 
         attrs['branch'] = branch
         attrs['created_by'] = created_by
 
-        print(attrs)
-
         return attrs
 
     # if I create a custom model then it's need to mention create
     def create(self, validate_data):
+        userdetails_data = validate_data.pop('userdetails')
         validate_data.pop('password2')
-        return User.objects.create_user(**validate_data)
+        """
+        create_user is a convenience method provided by Django's authentication system. It is typically used to create a new user instance and save it to the database, especially when you're dealing with user authentication. This method takes care of hashing the password before saving it to the database.
+        """
+        user = User.objects.create_user(**validate_data)
+        UserDetails.objects.create(user=user, **userdetails_data)
+        return user
 
 class UserLoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=255)
     class Meta:
         model = User
         fields = ['email', 'password']
-
-class CreatedBySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['email']
 
 class UserSerializer(serializers.ModelSerializer):
     allergy = MedicineProblemSerializer(source='medicineproblem_set', many=True, read_only=True)
