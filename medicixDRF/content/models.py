@@ -9,14 +9,14 @@ class MainCategory(BaseModel):
         return self.name
 
 class Category(BaseModel):
-    maincategory = models.ForeignKey(MainCategory, on_delete=models.CASCADE)
+    maincategory = models.ForeignKey(MainCategory, related_name='categories', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
 
 class Subcategory(BaseModel):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name='subcategories', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
 
     def __str__(self):

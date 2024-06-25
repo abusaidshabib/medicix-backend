@@ -4,7 +4,7 @@ from rest_framework import serializers
 class SubcategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Subcategory
-        fields = ['id','name']
+        fields = ['id', 'name']
 
     def create(self, validated_data):
         sec_category = self.context.get('sec_category')
@@ -12,11 +12,11 @@ class SubcategorySerializer(serializers.ModelSerializer):
         return sub_category
 
 class CategorySerializer(serializers.ModelSerializer):
-    subcategory = SubcategorySerializer(many=True, read_only=True)
+    subcategories = SubcategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'subcategory']
+        fields = ['id', 'name', 'subcategories']
 
     def create(self, validated_data):
         main_category = self.context.get('main_category')
@@ -24,12 +24,12 @@ class CategorySerializer(serializers.ModelSerializer):
         category = Category.objects.create(maincategory=main_category, **validated_data)
         return category
 
-
 class MainCategorySerializer(serializers.ModelSerializer):
-    category = CategorySerializer(many=True, read_only=True)
+    categories = CategorySerializer(many=True, read_only=True)
+
     class Meta:
         model = MainCategory
-        fields = ['id', 'name', 'category']
+        fields = ['id', 'name', 'categories']
 
     def create(self, validated_data):
         main_category = MainCategory.objects.create(**validated_data)
@@ -39,46 +39,3 @@ class MainCategorySerializer(serializers.ModelSerializer):
         instance.name = validated_data.get('name', instance.name)
         instance.save()
         return instance
-
-
-
-
-"""
-{
-    "category_type": "main",
-    "name":"Electronics category test 2"
-}
-
-{
-    "category_type": "cat",
-	"main_id": 1,
-	"name":"Computer"
-}
-
-{
-  "category_type": "sub",
-	"main_id": 1,
-    "cat_id":1,
-	"name":"Electronics category 1"
-}
-
-# For update related work
-{
-    "category_type":"main",
-    "main_id":1,
-    "name":"Electronics update"
-}
-
-{
-  "category_type": "cat",
-    "cat_id":1,
-	"name":"Electronics update cat"
-}
-
-{
-  "category_type": "sub",
-    "sub_id":1,
-	"name":"Electronics update sub"
-}
-
-"""
