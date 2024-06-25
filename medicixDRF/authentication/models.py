@@ -44,7 +44,7 @@ class User(BaseModel, AbstractBaseUser):
         return True
 
 class UserDetails(AddressModel):
-    user = models.OneToOneField(User, verbose_name=_("user_details"), on_delete=models.CASCADE)
+    user = models.OneToOneField(User, verbose_name=_("user_details"), on_delete=models.CASCADE, primary_key=True)
 
 
 

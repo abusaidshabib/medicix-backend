@@ -33,4 +33,4 @@ class Branch(models.Model):
         return self.name
 
 class BranchAddress(AddressModel):
-    branch = models.OneToOneField(Branch, on_delete=models.CASCADE)
+    branch = models.OneToOneField(Branch, on_delete=models.CASCADE, primary_key=True)
