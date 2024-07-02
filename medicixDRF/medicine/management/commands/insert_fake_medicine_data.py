@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from medicine.models import Medicine
 from branch.models import Branch
+from content.models import Subcategory
 from faker import Faker
 import random
 from django.utils import timezone
@@ -18,24 +19,22 @@ class Command(BaseCommand):
         categories = ["T","SY","SU","IN","TO","D","IN","L"]
         uses_for = ["H","A"]
 
-        branches = Branch.objects.all()
-        if not branches.exists():
-            self.stdout.write(self.style.ERROR('No branches found. Please insert branches first.'))
+        subcategories = list(Subcategory.objects.all())
+        if not subcategories:
+            self.stdout.write(self.style.ERROR('No Subcategories found. Please insert Subcategories first.'))
             return
 
         for _ in range(total_medicines):
             medicine = Medicine(
-                branch=random.choice(branches),
                 brand = fake.company(),
                 manufacturer = fake.company(),
                 generic = fake.word(),
                 strength = f"{random.randint(1,500)} mg",
-                category = random.choice(categories),
+                subcategory = random.choice(subcategories),
                 price = round(random.uniform(1, 100), 2),
+                medicine_type = random.choice(categories),
                 use_for = random.choice(uses_for),
                 dar = fake.text(max_nb_chars=200),
-                total = round(random.uniform(1,1000), 2),
-                expire_date = fake.date_between(start_date='today',end_date='+2y')
             )
             medicine.save()
 

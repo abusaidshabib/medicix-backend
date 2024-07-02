@@ -16,7 +16,7 @@ class BranchSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         branchaddress_data = validated_data.pop('branchaddress')
-        last_branch = Branch.objects.last()
+        last_branch = Branch.objects.order_by('-id').first()
         if not last_branch:
             branch_code = 'BR1'
         else:
@@ -26,13 +26,14 @@ class BranchSerializer(serializers.ModelSerializer):
 
         branch = Branch.objects.create(**validated_data)
         BranchAddress.objects.create(branch=branch, **branchaddress_data)
+        print(branch)
 
         return branch
 
     def update(self,instance ,validated_data):
         branchaddress_data = validated_data.pop('branchaddress')
         branchaddress_instance = instance.branchaddress
-        
+
         instance.name = validated_data.get('name', instance.name)
         instance.save()
 

@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import MedicineInventoryCreateView
+from .views import MedicineGetView
 
 urlpatterns = [
-    path("", MedicineInventoryCreateView.as_view()),
+    path("", MedicineGetView.as_view()),
 ]
