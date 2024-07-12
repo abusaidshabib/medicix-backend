@@ -11,7 +11,7 @@ class BranchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Branch
-        fields = ["name", "branchaddress"]
+        fields = ["branch_code","name", "branchaddress"]
         read_only_fields = ['branch_code', 'created_by']
 
     def create(self, validated_data):

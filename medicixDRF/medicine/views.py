@@ -34,4 +34,7 @@ class MedicineGetView(APIView):
             medicines = Medicine.objects.none()
         serializer = MedicineSerializer(medicines, many=True, context={'branch': branch})
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # def post(self, request, format=None):
+    #     serializer =
             # inventories = Inventory.objects.filter(branch=branch)

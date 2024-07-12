@@ -18,7 +18,7 @@ class BranchesCreateView(APIView):
         return Response({'branches': serializers.data, 'success': True}, status=status.HTTP_201_CREATED)
 
     def post(self, request, format=None):
-        serializer = BranchSerializer(data=request.data, context={'request': request})
+        serializer = BranchSerializer(data=request.data)
         if serializer.is_valid():
             branch = serializer.save()
             branch_data = BranchSerializer(branch).data
@@ -49,5 +49,9 @@ class BranchGetUpdateView(APIView):
         except Branch.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+        # Serialize the branch details before deletion
+        serializer = BranchSerializer(branch)
+        branch_data = serializer.data
+
         branch.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(branch_data, status=status.HTTP_200_OK)

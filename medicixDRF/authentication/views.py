@@ -28,7 +28,7 @@ class GetCSRFToken(APIView):
 @method_decorator(csrf_protect, name='dispatch')
 class UserRegistrationView(APIView):
     def post(self, request, format=None):
-        serializer = UserRegistrationSerializer(data=request.data)
+        serializer = UserRegistrationSerializer(data=request.data, context={'request': request})
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
             token = get_tokens_for_user(user)
