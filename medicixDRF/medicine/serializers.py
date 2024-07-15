@@ -1,87 +1,92 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from .models import Medicine, Inventory
-from authentication.models import User
+from content.serializers import SubcategorySerializer
+from content.models import Subcategory
 
-"""
-class Inventory(BaseModel):
-    medicine = models.ForeignKey(Medicine, verbose_name=_("Medicine"), on_delete=models.CASCADE, related_name='')
-    branch = models.ForeignKey(Branch, verbose_name=_("Branch"), on_delete=models.CASCADE, related_name='')
-    quantity = models.IntegerField()
 
-    class Meta:
-        unique_together = ["medicine", "branch"]
-
-    def __str__(self):
-        return f"{self.medicine} at {self.branch}"
-
-    def clean(self):
-        if self.soled > self.quantity:
-            raise ValidationError(_("The sold quantity cannot exceed the available quantity."))
-"""
 
 class InventorySerializer(serializers.ModelSerializer):
-    branch_name = serializers.SerializerMethodField(read_only=True)
+    medicine = serializers.SlugRelatedField(slug_field='brand', queryset=Medicine.objects.all(), write_only=True)
+
     class Meta:
         model = Inventory
-        fields = ["medicine","branch_name","quantity"]
+        fields = ['medicine', 'quantity', 'expire_date', 'soled']
         extra_kwargs = {
-            'medicine': {'write_only': True},
+            'soled': {'read_only': True}
         }
 
-    def get_branch_name(self, obj):
-        return obj.branch.name if obj.branch else None
+    def validate(self, data):
+        request = self.context.get('request')
+        branch = request.user.branch
+        medicine = data['medicine']
+        if not branch:
+            raise ValidationError({'field_errors':'user is not assign in branch'})
+        if Inventory.objects.filter(medicine=medicine, branch=branch).exists():
+            raise ValidationError({'non_field_errors': 'This medicine already exists in this branch inventory.'})
 
-    # def create(self, validated_data):
+        return data
+
+    def create(self, validated_data):
+        request = self.context.get('request', None)
+        user = request.user
+        branch = user.branch
+        inventory = Inventory.objects.create(branch=branch, **validated_data)
+        return inventory
+
+    # def update(self, instance, validated_data):
+    #     instance.e
 
 class MedicineSerializer(serializers.ModelSerializer):
-    inventories_medicine = serializers.SerializerMethodField()
-    # inventories_medicine = InventorySerializer(many=True, read_only=True)
+    subcategory = serializers.SlugRelatedField(slug_field='name', queryset=Subcategory.objects.all(), write_only=True)
+    inventories = InventorySerializer(many=True, read_only=True)
     class Meta:
         model = Medicine
-        fields = ["brand", "manufacturer", "generic","strength", "price", "use_for", "dar", "inventories_medicine"]
+        fields = ['brand', 'manufacturer', 'generic', 'strength', 'subcategory', 'price', 'medicine_type', 'use_for', 'dar','inventories']
 
-    def get_inventories_medicine(self, obj):
-        branch = self.context.get('branch')
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request', None)
+        user = request.user
+        branch = user.branch
         if branch:
-            inventories = obj.inventories.filter(branch=branch)
+            inventories = instance.inventories.filter(branch__name=branch)
         else:
-            inventories = obj.inventories.all()
-        return InventorySerializer(inventories, many=True).data
+            inventories = instance.inventories.all()
+        representation['inventories'] = InventorySerializer(inventories, many=True).data
+        return representation
 
-    # def create(self, validated_data):
 
 
-    # def create(self, validated_data):
-    #     user = self.context['request'].user
-    #     medicine_quantity = validated_data.pop('quantity')
-    #     branch = user.branch
+"""
+from rest_framework import serializers
+from .models import Inventory, Medicine
 
-    #     try:
-    #         medicines = Medicine.objects.get_or_create(**validated_data)
-    #     except Medicine.DoesNotExist:
-    #         return serializers.ValidationError("The medicine is created multiple please check it")
+class InventorySerializer(serializers.ModelSerializer):
+    medicine = serializers.SlugRelatedField(slug_field='brand', queryset=Medicine.objects.all())
 
-    #     print(medicines)
+    class Meta:
+        model = Inventory
+        fields = ['medicine', 'quantity', 'expire_date']
 
-    # def create(self, validated_data):
-    #     branchaddress_data = validated_data.pop('branchaddress')
-    #     last_branch = Branch.objects.last()
-    #     if not last_branch:
-    #         branch_code = 'BR1'
-    #     else:
-    #         branch_code = f'BR{last_branch.id + 1}'
-    #     validated_data['branch_code'] = branch_code
-    #     validated_data['created_by'] = self.context['request'].user
+    def create(self, validated_data):
+        request = self.context.get('request')
+        user = request.user
+        branch = user.branch  # Adjust based on how branch is related to the user
 
-    #     branch = Branch.objects.create(**validated_data)
-    #     BranchAddress.objects.create(branch=branch, **branchaddress_data)
+        inventory = Inventory.objects.create(branch=branch, **validated_data)
+        return inventory
 
-    #     return branch
+    def update(self, instance, validated_data):
+        request = self.context.get('request')
+        user = request.user
+        branch = user.branch  # Adjust based on how branch is related to the user
 
-        # medicine = attrs.get('medicine')
-
-    # def create(self, validate_data):
-    #     inventory_data = validate_data.pop('inventory')
-    #     medicine = Medicine.objects.create(**validate_data)
-    #     inventory_data
+        instance.medicine = validated_data.get('medicine', instance.medicine)
+        instance.quantity = validated_data.get('quantity', instance.quantity)
+        instance.expire_date = validated_data.get('expire_date', instance.expire_date)
+        instance.branch = branch
+        instance.save()
+        return instance
+"""

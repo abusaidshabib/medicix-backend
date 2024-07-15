@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 from branch.models import Branch
 
 class Medicine(BaseModel):
-    brand = models.CharField(max_length=200)
+    brand = models.CharField(max_length=200, unique=True)
     manufacturer = models.CharField(max_length=255)
     generic = models.CharField(max_length=150)
     strength = models.CharField(max_length=150)
@@ -174,7 +174,7 @@ class Inventory(BaseModel):
     medicine = models.ForeignKey(Medicine, verbose_name=_("Medicine"), on_delete=models.CASCADE, related_name='inventories')
     branch = models.ForeignKey(Branch, verbose_name=_("Branch"), on_delete=models.CASCADE)
     quantity = models.IntegerField()
-    soled = models.IntegerField()
+    soled = models.IntegerField(blank=True, null=True)
     expire_date = models.DateField()
 
     class Meta:

@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import MedicineGetView
+from .views import MedicineGetCreateView, MedicineInventoryCreateView
 
 urlpatterns = [
-    path("", MedicineGetView.as_view()),
+    path("", MedicineGetCreateView.as_view()),
+    path("inventory/", MedicineInventoryCreateView.as_view()),
 ]
